@@ -13,8 +13,7 @@ const loginForm = document.getElementById('loginForm');
 const projectForm = document.getElementById('createProjectForm');
 const projectUrl = 'http://localhost:4000/project-explorer/createproject.html'
 const showcase = document.getElementsByClassName('showcase');
-
-console.log(showcase);
+const viewProjectId = getProjectId();
 
 window.addEventListener('load', () => {
 
@@ -60,21 +59,17 @@ if (loginForm) {
     verifyLoginData()
   })
 }
-// loginForm.addEventListener('submit', (e) => {
-//   e.preventDefault();
-//   verifyLoginData()
-// })
 
 logout.addEventListener('click', () => {
   document.cookie = 'uid' + '=; path=/;';
   window.location.replace('index.html');
 })
-// form.addEventListener('submit', (e) => {
 
-//   e.preventDefault();
+if (window.location.href === `http://localhost:4000/project-explorer/viewproject.html?id=${viewProjectId}`) {
 
-//   getRegistration();
-// })
+  projectDetails();
+
+}
 
 function getPrograms() {
 
@@ -208,11 +203,6 @@ function showUserFirstname(name) {
   username.textContent = `Hi ${name}`
 }
 
-//  loginForm.addEventListener('submit', (e) => {
-//    e.preventDefault();
-//    verifyLoginData()
-//  })
-
 function verifyLoginData() {
 
   const loginEmail = document.getElementById('loginEmail');
@@ -315,9 +305,6 @@ function createElements(data) {
 
   const cardBody = document.getElementsByClassName('card-body');
 
-  console.log(cardBody);
-  console.log(cardBody[0].children.length);
-
   const projectTitle1 = document.createElement('h5');
   const projectTitle2 = document.createElement('h5');
   const projectTitle3 = document.createElement('h5');
@@ -329,7 +316,7 @@ function createElements(data) {
  
   
   projectTitle1.className += 'card-title'
-  projectLink1.setAttribute('href', `viewproject.html?id{${data[0].id}}`);
+  projectLink1.setAttribute('href', `viewproject.html?id=${data[0].id}`);
   projectTitle1.appendChild(projectLink1);
   projectLink1.textContent = data[0].name
   cardBody[0].replaceChild(projectTitle1, cardBody[0].children[0]);
@@ -350,7 +337,7 @@ function createElements(data) {
   // project title
   
   projectTitle2.className += 'card-title'
-  projectLink2.setAttribute('href', `viewproject.html?id{${data[1].id}}`);
+  projectLink2.setAttribute('href', `viewproject.html?id=${data[1].id}`);
   projectTitle2.appendChild(projectLink2);
   projectLink2.textContent = data[1].name
   cardBody[1].replaceChild(projectTitle2, cardBody[1].children[0]);
@@ -372,11 +359,10 @@ function createElements(data) {
   // project title
   
   projectTitle3.className += 'card-title'
-  projectLink3.setAttribute('href', `viewproject.html?id{${data[2].id}}`);
+  projectLink3.setAttribute('href', `viewproject.html?id=${data[2].id}`);
   projectTitle3.appendChild(projectLink3);
   projectLink3.textContent = data[2].name
   cardBody[2].replaceChild(projectTitle3, cardBody[2].children[0]);
-  console.log(projectTitle3);
 
   // project author
   cardBody[2].children[1].textContent = `${data[2].authors[0]}, ${data[2].authors[1]}`
@@ -395,7 +381,7 @@ function createElements(data) {
   // project title
 
   projectTitle4.className += 'card-title'
-  projectLink4.setAttribute('href', `viewproject.html?id{${data[3].id}}`);
+  projectLink4.setAttribute('href', `viewproject.html?id=${data[3].id}`);
   projectTitle4.appendChild(projectLink4);
   projectLink4.textContent = data[3].name
   cardBody[3].replaceChild(projectTitle4, cardBody[3].children[0]);
@@ -410,44 +396,56 @@ function createElements(data) {
   cardBody[3].children[3].textContent = `${data[3].tags[0]}`;
   cardBody[3].children[3].textContent = `${data[3].tags[1]}`;
   cardBody[3].children[3].textContent = `${data[3].tags[2]}`;
-  
-
-  console.log(data.length)
 
 }
 
 function getProjectId() {
 
   const projectUrl = window.location.href;
-  console.log(projectUrl);
   const url = new URL(projectUrl)
-  console.log(url);
   const search_params = url.searchParams
   const projectId = search_params.get('id') 
-  console.log(projectId)
   return projectId;
 
 }
 
 function projectDetails() {
 
-  const id = getProjectId()
-  
+  const id = getProjectId();
+    
   fetch(`/api/projects/${id}`)
   .then((response) => {
-    console.log(response);
     return response.json();
   })
   .then((data) => {
-    console.log(data);
+    const projectName = document.getElementById("project_name");
+    const projectInfo = document.getElementById("project_abstract");
+    const projectOwners = document.getElementById("project_authors");
+    const projectLinks = document.getElementById("project_tags");
+
+    projectName.textContent = data.name;
+    projectInfo.textContent = data.abstract;
+    projectOwners.textContent = data.authors;
+    projectLinks.textContent = data.tags;
+    return data
   })
-  
+  .then((data2) => {
+    
+    const projectCreator = data2.createdBy;
+
+    fetch(`/api/users/${projectCreator}`)
+    .then((response) => {
+      return response.json();
+    })
+    .then((creatorData) => {
+      projectAuthor = document.getElementById("project_author");
+      projectAuthor.textContent = creatorData.firstname + ' ' + creatorData.lastname;
+    })
+
+  })
+
 }
 
-// console.log(document.cookie);
-
-
-projectDetails();
 getPrograms();
 getGraduationYears();
 
