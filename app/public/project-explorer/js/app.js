@@ -38,7 +38,7 @@ if (form) {
 if (window.location.href === projectUrl) {
   const cookieId = getCookie();
   if (cookieId === '') {
-    newProjectUrl = 'http://localhost:4000/project-explorer/login.html'
+    newProjectUrl = 'login.html'
     window.location.href = newProjectUrl;
   } else {
     projectForm.addEventListener('submit', (e) => {
