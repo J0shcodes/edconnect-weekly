@@ -11,7 +11,7 @@ const username = document.getElementById("username");
 const show = document.getElementsByClassName("show");
 const loginForm = document.getElementById('loginForm');
 const projectForm = document.getElementById('createProjectForm');
-const projectUrl = 'http://localhost:4000/project-explorer/createproject.html'
+const projectPathName = '/project-explorer/createproject.html';
 const showcase = document.getElementsByClassName('showcase');
 const viewProjectId = getProjectId();
 
@@ -35,21 +35,21 @@ if (form) {
   })  
 }
 
-if (window.location.href === projectUrl) {
+if (window.location.pathname === projectPathName) {
   const cookieId = getCookie();
   if (cookieId === '') {
-    newProjectUrl = 'login.html'
-    window.location.href = newProjectUrl;
+    newProjectPathName = '/project-explorer/login.html';
+    window.location.pathname = newProjectPathName;
   } else {
     projectForm.addEventListener('submit', (e) => {
-      e.preventDefault()
-      const projectData = getProjectData()
-      verifyProjectData(projectData)
+      e.preventDefault();
+      const projectData = getProjectData();
+      verifyProjectData(projectData);
     })
   }
 }
 
-if (window.location.href === 'http://localhost:4000/project-explorer/index.html') {
+if (window.location.pathname === '/project-explorer/index.html') {
 
   getProjectList();
 
@@ -67,7 +67,7 @@ logout.addEventListener('click', () => {
   window.location.replace('index.html');
 })
 
-if (window.location.href === `http://localhost:4000/project-explorer/viewproject.html?id=${viewProjectId}`) {
+if (window.location.pathname === '/project-explorer/viewproject.html') {
 
   projectDetails();
 
