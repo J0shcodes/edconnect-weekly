@@ -146,4 +146,3 @@ api.get("/graduationYears", (req, res) => {
 });
 
 module.exports = api;
-
